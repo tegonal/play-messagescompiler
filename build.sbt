@@ -10,6 +10,8 @@ description := "SBT plugin for compiled messages resources in Play 2.2"
 
 resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
+resolvers += "Tegonal releases" at "https://github.com/tegonal/tegonal-mvn/raw/master/releases/"
+
 resolvers ++= Seq(
   Resolver.url("Typesafe repository", url("http://repo.typesafe.com/typesafe/releases/"))(Resolver.ivyStylePatterns),
   "Typesafe Releases Maven " at "http://repo.typesafe.com/typesafe/releases/")
