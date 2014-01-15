@@ -43,7 +43,7 @@ object MessagesCompilerPlugin extends Plugin {
         val dependencies = previousRelation.filter((original, compiled) => changedFiles.contains(original))._2s
         dependencies.foreach(IO.delete)
 
-        val generated: Seq[(File, java.io.File)] = (files x relativeTo(Seq(conf))).flatMap {
+        val generated: Seq[(File, java.io.File)] = (files pair relativeTo(Seq(conf))).flatMap {
           case (sourceFile, name) => {
             if (changedFiles.contains(sourceFile)) {
               val (debug, min, dependencies) = try {

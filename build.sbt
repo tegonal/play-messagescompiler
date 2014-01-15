@@ -22,4 +22,6 @@ libraryDependencies ++= Seq(
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
 
+scalacOptions += "-deprecation"
+
 initialCommands := "import com.tegonal.play-messagescompiler._"
