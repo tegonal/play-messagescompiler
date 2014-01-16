@@ -1,4 +1,4 @@
-# play-messagescompiler - Messages compiler for Play 2
+# play-messagescompiler - Messages compiler for Play 2 Scala
 
 ## About
 
