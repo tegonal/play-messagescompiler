@@ -2,14 +2,14 @@
 
 ## About
 
-This humble Play plugin provides type safety for the project's meassages. It adds key literals instead of using strings to reference a property.
+This humble Play plugin provides type safety for the project's messages. It adds key literals instead of using strings to reference a property.
 
 
     Messages("home.title")
     // becomes
     Messages(home.title)
 
-Using the generated key literals saves the trouble of misspelt keys that lead to non-translated properties. An nonexistent  or  changed key will lead to a compilation error.
+Using the generated key literals saves the trouble of misspelt keys that lead to non-translated properties. A nonexistent or changed key will lead to a compilation error.
 
 ## Installation
 
@@ -22,6 +22,9 @@ Add the following to `project/plugins.sbt`:
 ## Usage
 
 The file `conf/messages` will be compiled to `target/scala*/src_managed/main/conf/messages.scala`
+
+    home.title=Space: the final frontier
+
 After importing conf.messages._ the key literals are available within your code.
 
     package controllers
