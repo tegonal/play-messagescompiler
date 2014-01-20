@@ -42,6 +42,19 @@ After importing conf.messages._ the key literals are available within your code.
     
     }
 
+## Ideas
+
+- Instead of having to write `Messages(home.title)`, `home.title` could be an implicit to `Messages`
+- This would also lead to the possibility of using `java.text.MessageFormat` arguments.
+
+        // conf/messages
+        home.title=Space: the final frontier, Stardate: {0}
+
+        // within a controller
+        Ok(views.html.index(home.title("44390.1")))
+
+The compiler would enforce the correct number of arguments. If a `FormatType` is specified, that type could be reflected in the compiled message key.
+
 ## License
 
 This program is free software: you can redistribute it and/or modify
