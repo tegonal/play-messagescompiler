@@ -18,12 +18,14 @@
 * with this program. If not, see http://www.gnu.org/licenses/                 *
 *                                                                             *
 \*                                                                           */
-package com.tegonal.play.plugin.messagescompiler
+package com.tegonal.play.plugin
 
 import sbt._
 import sbt.Keys._
 import play.Project._
 import play.PlayExceptions.AssetCompilationException
+import java.io.File
+import sbt.ConfigKey.configurationToKey
 
 object MessagesCompilerPlugin extends Plugin {
   val id = "play-messagescompiler"

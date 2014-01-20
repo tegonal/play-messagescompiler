@@ -18,30 +18,63 @@
 * with this program. If not, see http://www.gnu.org/licenses/                 *
 *                                                                             *
 \*                                                                           */
-package com.tegonal.play.plugin.messagescompiler
+package com.tegonal.resourceparser.parser
 
-import sbt.IO
-import sbt._
-import java.io.File
-import java.nio.charset.Charset
-import com.tegonal.resourceparser.generator._
-import play.PlayExceptions._
+import scala.util.parsing.combinator._
 
-object MessagesCompiler {
-  def compile(src: File, options: Seq[String]): (String, Option[String], Seq[File]) = {
-    try {
-      val messages = scala.io.Source.fromFile(src).mkString
+class ResourceParser extends JavaTokenParsers {
 
-      val result = s"""// @SOURCE:${src.getAbsolutePath()}
-                      |// @DATE:${new java.util.Date}
-                      |${ResourceToScalaGenerator.generateSource(messages, "conf", "messages").get}""".stripMargin
+  override def skipWhitespace = false
 
-      (result, None, Seq(src))
-    } catch {
-      case e: Exception =>
-        e.printStackTrace
-        throw new AssetCompilationException(Some(src), "Internal messages compiler error (see logs)", None, None)
-    }
-  }
+  /**
+   * Convenient entry method
+   */
+  def parse(input: String): ParseResult[ResourceBundle] = parseAll(resourceBundle, input.trim)
+
+  /**
+   * The top level entry point
+   */
+  def resourceBundle: Parser[ResourceBundle] =
+    repsep(property | comment, whiteSpace) ^^ (x => ResourceBundle(x))
+
+  /**
+   * Comment of the form #comment text
+   */
+  def comment: Parser[Comment] =
+    "#" ~> """([^\n\r]+)""".r ^^ { case text => Comment(text) }
+
+  /**
+   * Property of the form path=value
+   */
+  def property: Parser[Property] =
+    path ~ """\s*=""".r ~ value ^^ { case lhs ~ eq ~ rhs => Property(lhs, rhs) }
+
+  /**
+   * Path of the form path.path.path
+   */
+  def path: Parser[Path] =
+    pathElement ~ rep("." ~> pathElement) ^^ { case lhs ~ rhs => Path(lhs :: rhs) }
+
+  /**
+   * Path elements must consist of word characters
+   */
+  def pathElement: Parser[PathElement] =
+    """(\w+)""".r ^^ (x => PathElement(x))
+
+  /**
+   * Every character is allowed except new lines
+   */
+  def value: Parser[PropertyValue] =
+    """([^\n\r]*)""".r ^^ (x => PropertyValue(x))
+}
+
+object ResourceParser {
+
+  /**
+   * @param input multi-line string of the resource file
+   * @return the resulting AST if the parsing was successful, else None.
+   */
+  def parse(input: String): Option[ResourceBundle] =
+    (new ResourceParser).parse(input).map { Some(_) }.getOrElse(None)
 
 }
