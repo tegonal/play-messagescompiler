@@ -63,6 +63,7 @@ object ResourceToScalaGenerator {
 
   def open(packageName: String, objectName: String) = s"""package $packageName
                 |
+                |import play.api.i18n._
                 |import scala.language.implicitConversions
                 |
                 |object $objectName {
@@ -75,13 +76,13 @@ object ResourceToScalaGenerator {
                 |trait ResourcePath {
                 |  def pathElements: Seq[PathElement]
                 |
-                |  def resourceString = pathElements.map(_.identifier).mkString(".")
+                |  def resourceString = Messages(pathElements.map(_.identifier).mkString("."))
                 |}
                 |
                 |/**
-                | * implicit conversion from resource path to string
+                | * implicit conversion from resource path to Messages
                 | */
-                |implicit def resourcePath2String(resourcePath: ResourcePath): String =
+                |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                 |  resourcePath.resourceString
                 |
                 |""".stripMargin

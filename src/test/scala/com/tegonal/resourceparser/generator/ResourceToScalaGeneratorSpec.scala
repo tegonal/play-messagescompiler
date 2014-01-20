@@ -36,6 +36,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
 
   val expected = """package com.tegonal.resourceparser
                    |
+                   |import play.api.i18n._
                    |import scala.language.implicitConversions
                    |
                    |object ResourceBundleImplicits {
@@ -48,13 +49,13 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |trait ResourcePath {
                    |  def pathElements: Seq[PathElement]
                    |
-                   |  def resourceString = pathElements.map(_.identifier).mkString(".")
+                   |  def resourceString = Messages(pathElements.map(_.identifier).mkString("."))
                    |}
                    |
                    |/**
-                   | * implicit conversion from resource path to string
+                   | * implicit conversion from resource path to Messages
                    | */
-                   |implicit def resourcePath2String(resourcePath: ResourcePath): String =
+                   |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                    |  resourcePath.resourceString
                    |
                    |case object Items extends PathElement("items") {
@@ -113,6 +114,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
 
   val keywordsExpected = """package com.tegonal.resourceparser
                            |
+                           |import play.api.i18n._
                            |import scala.language.implicitConversions
                            |
                            |object ResourceBundleImplicits {
@@ -125,13 +127,13 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |trait ResourcePath {
                            |  def pathElements: Seq[PathElement]
                            |
-                           |  def resourceString = pathElements.map(_.identifier).mkString(".")
+                           |  def resourceString = Messages(pathElements.map(_.identifier).mkString("."))
                            |}
                            |
                            |/**
-                           | * implicit conversion from resource path to string
+                           | * implicit conversion from resource path to Messages
                            | */
-                           |implicit def resourcePath2String(resourcePath: ResourcePath): String =
+                           |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                            |  resourcePath.resourceString
                            |
                            |case object Type extends PathElement("type") with ResourcePath {
