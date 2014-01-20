@@ -41,25 +41,32 @@ object ResourceToScalaGenerator {
   }
 
   def generate(resourceNode: ResourceNode): String = resourceNode match {
-    case ResourceNode(Nil, children, false) => children.map(generate).mkString("\n")
+    case ResourceNode(Nil, children, false, _) => children.map(generate).mkString("\n")
 
-    case ResourceNode(path, children, isProperty) => createNodeCode(path, children, isProperty)
+    case ResourceNode(path, children, isProperty, args) => createNodeCode(path, children, isProperty, args)
   }
 
-  def createNodeCode(path: Seq[String], children: List[ResourceNode], isProperty: Boolean) = {
+  def createNodeCode(path: Seq[String], children: List[ResourceNode], isProperty: Boolean, args: List[Arg]) = {
     s"""case object ${path.map { _.capitalize }.mkString} extends PathElement("${path.last}")${if (isProperty) " with ResourcePath" else ""} {
        |  ${if (isProperty) "def pathElements = " + path.zipWithIndex.map { case (p, i) => (0 to i).toList.map(path(_).capitalize).mkString }.mkString("::") + " :: Nil" else ""}
-       |  ${children.map { c => "def " + escapeReservedWord(c.path.last) + " = " + c.path.map { _.capitalize }.mkString }.mkString("\n\n  ")}
+       |  ${children.map { c => "def " + escapeReservedWord(c.path.last) + argumentList(args) + " = " + c.path.map { _.capitalize }.mkString + parameterList(args) }.mkString("\n\n  ")}
+       |  ${if (!args.isEmpty && isProperty) "def apply" + argumentList(args) + " = resourceString" + parameterList(args) else ""}
        |}
        |${
       path match {
-        case p :: Nil => "\ndef " + escapeReservedWord(p) + " = " + p.capitalize
+        case p :: Nil => "\ndef " + escapeReservedWord(p) + { if (isProperty) argumentList(args) else "" } + " = " + p.capitalize + { if (isProperty) parameterList(args) else "" }
         case _ => ""
       }
     }
        |
        |${children.map(generate).mkString}""".stripMargin
   }
+
+  private def argumentList(args: List[Arg], param: String = ": Any") =
+    if (args.isEmpty) "" else s"(${args map (a => s"arg${a.index}$param") mkString (", ")})"
+
+  private def parameterList(args: List[Arg]) =
+    argumentList(args, "")
 
   def open(packageName: String, objectName: String) = s"""package $packageName
                 |
@@ -76,14 +83,14 @@ object ResourceToScalaGenerator {
                 |trait ResourcePath {
                 |  def pathElements: Seq[PathElement]
                 |
-                |  def resourceString = Messages(pathElements.map(_.identifier).mkString("."))
+                |  def resourceString(args: Any*) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                 |}
                 |
                 |/**
                 | * implicit conversion from resource path to Messages
                 | */
                 |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
-                |  resourcePath.resourceString
+                |  resourcePath.resourceString()
                 |
                 |""".stripMargin
 

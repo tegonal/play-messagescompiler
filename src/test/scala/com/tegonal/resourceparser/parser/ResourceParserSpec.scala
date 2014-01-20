@@ -66,6 +66,10 @@ class ResourceParserSpec extends Specification {
       resourceParser.parse("#Auftrag\nthing=Title").get === ResourceBundle(Comment("Auftrag") :: Property(Path(PathElement("thing") :: Nil), PropertyValue("Title")) :: Nil)
     }
 
+    "succeed with args within property value" in {
+      resourceParser.parse("title=Hello {0}, {1}").get === ResourceBundle(Property(Path(PathElement("title") :: Nil), PropertyValue("Hello {0}, {1}", PropertyValueArg(0) :: PropertyValueArg(1) :: Nil)) :: Nil)
+    }
+
   }
 
 }

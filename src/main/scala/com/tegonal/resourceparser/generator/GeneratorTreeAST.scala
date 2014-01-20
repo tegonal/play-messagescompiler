@@ -20,4 +20,6 @@
 \*                                                                           */
 package com.tegonal.resourceparser.generator
 
-case class ResourceNode(val path: Seq[String], val children: List[ResourceNode], val isProperty: Boolean = false)
+case class ResourceNode(path: Seq[String], children: List[ResourceNode], isProperty: Boolean = false, args: List[Arg] = Nil)
+
+case class Arg(index: Int)

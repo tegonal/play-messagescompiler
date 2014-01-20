@@ -7,7 +7,7 @@ This humble Play plugin provides type safety for the project's messages. It adds
 
     Messages("home.title")
     // becomes
-    Messages(home.title)
+    home.title
 
 Using the generated key literals saves the trouble of misspelt keys that lead to non-translated properties. A nonexistent or changed key will lead to a compilation error.
 
@@ -17,7 +17,7 @@ Add the following to `project/plugins.sbt`:
 
     resolvers += "Tegonal releases" at "https://github.com/tegonal/tegonal-mvn/raw/master/releases/"
 
-    addSbtPlugin("com.tegonal" % "play-messagescompiler" % "1.0.0")
+    addSbtPlugin("com.tegonal" % "play-messagescompiler" % "1.0.1")
 
 ## Usage
 
@@ -37,23 +37,25 @@ After importing conf.messages._ the key literals are available within your code.
     object Application extends Controller {
     
       def index = Action {
-        Ok(views.html.index(Messages(home.title)))
+        Ok(views.html.index(home.title))
       }
     
     }
 
+The plugin also supports message formats:
+
+    // conf/messages
+    home.title=Space: the final frontier, Stardate: {0}
+
+    // within a controller
+    Ok(views.html.index(home.title("44390.1")))
+    
+    // where this wouldn't compile
+    Ok(views.html.index(home.title))
+
 ## Ideas
 
-- Instead of having to write `Messages(home.title)`, `home.title` could be an implicit to `Messages`
-- This would also lead to the possibility of using `java.text.MessageFormat` arguments.
-
-        // conf/messages
-        home.title=Space: the final frontier, Stardate: {0}
-
-        // within a controller
-        Ok(views.html.index(home.title("44390.1")))
-
-The compiler would enforce the correct number of arguments. If a `FormatType` is specified, that type could be reflected in the compiled message key.
+- Type checked `java.text.MessageFormat` arguments (number, date, time, choice).
 
 ## License
 

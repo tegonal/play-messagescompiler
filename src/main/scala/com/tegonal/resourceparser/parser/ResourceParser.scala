@@ -26,6 +26,8 @@ class ResourceParser extends JavaTokenParsers {
 
   override def skipWhitespace = false
 
+  val ARG = """\{(\d+)\}""".r
+
   /**
    * Convenient entry method
    */
@@ -65,7 +67,13 @@ class ResourceParser extends JavaTokenParsers {
    * Every character is allowed except new lines
    */
   def value: Parser[PropertyValue] =
-    """([^\n\r]*)""".r ^^ (x => PropertyValue(x))
+    """([^\n\r]*)""".r ^^ (x => PropertyValue(x, extractArgs(x)))
+
+  /**
+   * Extract args with their index
+   */
+  private def extractArgs(x: String) =
+    (ARG findAllIn x map { case ARG(i) => PropertyValueArg(i.toInt) }).toList
 }
 
 object ResourceParser {

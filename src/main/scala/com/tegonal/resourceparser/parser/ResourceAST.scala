@@ -22,14 +22,16 @@ package com.tegonal.resourceparser.parser
 
 trait ResourceComponent
 
-case class ResourceBundle(val elements: List[ResourceComponent]) extends ResourceComponent
+case class ResourceBundle(elements: List[ResourceComponent]) extends ResourceComponent
 
-case class Path(val pathElements: List[PathElement]) extends ResourceComponent
+case class Path(pathElements: List[PathElement]) extends ResourceComponent
 
-case class PathElement(val name: String) extends ResourceComponent
+case class PathElement(name: String) extends ResourceComponent
 
-case class PropertyValue(val value: String) extends ResourceComponent
+case class PropertyValue(value: String, propertyValueArgs: List[PropertyValueArg] = Nil) extends ResourceComponent
 
-case class Property(val path: Path, val value: PropertyValue) extends ResourceComponent
+case class Property(path: Path, value: PropertyValue) extends ResourceComponent
 
-case class Comment(val value: String) extends ResourceComponent
+case class Comment(value: String) extends ResourceComponent
+
+case class PropertyValueArg(index: Int) extends ResourceComponent

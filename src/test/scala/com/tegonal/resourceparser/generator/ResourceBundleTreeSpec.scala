@@ -42,6 +42,10 @@ class ResourceBundleTreeSpec extends Specification {
       Property(Path(PathElement("orders") :: PathElement("title") :: Nil), PropertyValue("Order")) ::
       Nil)
 
+  val nestedPropertyArgsResourceBundle = ResourceBundle(
+    Property(
+      Path(PathElement("home") :: PathElement("title") :: Nil), PropertyValue("The list contains {0} items", PropertyValueArg(0) :: Nil)) :: Nil)
+
   "A tree" should {
     "be created for an empty property" in {
       ResourceBundleTree.create(emptyResourceBundle) === ResourceNode(Nil, Nil)
@@ -60,7 +64,7 @@ class ResourceBundleTreeSpec extends Specification {
           ResourceNode("items" :: "list" :: Nil,
             ResourceNode("items" :: "list" :: "title" :: Nil, Nil, true) :: ResourceNode("items" :: "list" :: "details" :: Nil, Nil, true) :: Nil) :: Nil) ::
           ResourceNode("orders" :: Nil,
-            ResourceNode("orders" :: "title" :: Nil, Nil, true) :: Nil) :: Nil)
+            ResourceNode("orders" :: "title" :: Nil, Nil, true) :: Nil, false) :: Nil)
     }
 
     "be created for nested properties" in {
@@ -70,6 +74,12 @@ class ResourceBundleTreeSpec extends Specification {
             ResourceNode("items" :: "list" :: "title" :: Nil, ResourceNode("items" :: "list" :: "title" :: "additional" :: Nil, Nil, true) :: Nil, true) :: Nil) :: Nil) ::
           ResourceNode("orders" :: Nil,
             ResourceNode("orders" :: "title" :: Nil, Nil, true) :: Nil) :: Nil)
+    }
+
+    "be created for nested properties with args" in {
+      ResourceBundleTree.create(nestedPropertyArgsResourceBundle) === ResourceNode(Nil,
+        ResourceNode("home" :: Nil,
+          ResourceNode("home" :: "title" :: Nil, Nil, true, Arg(0) :: Nil) :: Nil, false, Arg(0) :: Nil) :: Nil)
     }
   }
 }
