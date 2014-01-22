@@ -47,14 +47,14 @@ object ResourceToScalaGenerator {
   }
 
   def createNodeCode(path: Seq[String], children: List[ResourceNode], isProperty: Boolean, args: List[Arg]) = {
-    s"""case object ${path.map { _.capitalize }.mkString} extends PathElement("${path.last}")${if (isProperty) " with ResourcePath" else ""} {
-       |  ${if (isProperty) "def pathElements = " + path.zipWithIndex.map { case (p, i) => (0 to i).toList.map(path(_).capitalize).mkString }.mkString("::") + " :: Nil" else ""}
-       |  ${children.map { c => "def " + escapeReservedWord(c.path.last) + argumentList(args) + " = " + c.path.map { _.capitalize }.mkString + parameterList(args) }.mkString("\n\n  ")}
+    s"""case object __${path.map { _.capitalize }.mkString} extends PathElement("${path.last}")${if (isProperty) " with ResourcePath" else ""} {
+       |  ${if (isProperty) "def pathElements = " + path.zipWithIndex.map { case (p, i) => "__" + (0 to i).toList.map(path(_).capitalize).mkString }.mkString(" :: ") + " :: Nil" else ""}
+       |  ${children.map { c => "def " + escapeReservedWord(c.path.last) + argumentList(args) + " = __" + c.path.map { _.capitalize }.mkString + parameterList(args) }.mkString("\n\n  ")}
        |  ${if (!args.isEmpty && isProperty) "def apply" + argumentList(args) + " = resourceString" + parameterList(args) else ""}
        |}
        |${
       path match {
-        case p :: Nil => "\ndef " + escapeReservedWord(p) + { if (isProperty) argumentList(args) else "" } + " = " + p.capitalize + { if (isProperty) parameterList(args) else "" }
+        case p :: Nil => "\ndef " + escapeReservedWord(p) + { if (isProperty) argumentList(args) else "" } + " = __" + p.capitalize + { if (isProperty) parameterList(args) else "" }
         case _ => ""
       }
     }

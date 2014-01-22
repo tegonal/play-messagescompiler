@@ -61,56 +61,56 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                    |  resourcePath.resourceString()
                    |
-                   |case object Items extends PathElement("items") {
+                   |case object __Items extends PathElement("items") {
                    |
-                   |  def details = ItemsDetails
+                   |  def details = __ItemsDetails
                    |
-                   |  def list = ItemsList
+                   |  def list = __ItemsList
                    |}
                    |
-                   |def items = Items
+                   |def items = __Items
                    |
-                   |case object ItemsDetails extends PathElement("details") with ResourcePath {
-                   |  def pathElements = Items :: ItemsDetails :: Nil
-                   |
-                   |}
-                   |
-                   |case object ItemsList extends PathElement("list") {
-                   |
-                   |  def title = ItemsListTitle
-                   |}
-                   |
-                   |case object ItemsListTitle extends PathElement("title") with ResourcePath {
-                   |  def pathElements = Items :: ItemsList :: ItemsListTitle :: Nil
+                   |case object __ItemsDetails extends PathElement("details") with ResourcePath {
+                   |  def pathElements = __Items :: __ItemsDetails :: Nil
                    |
                    |}
                    |
-                   |case object Orders extends PathElement("orders") {
+                   |case object __ItemsList extends PathElement("list") {
                    |
-                   |  def list = OrdersList
-                   |
-                   |  def details = OrdersDetails
+                   |  def title = __ItemsListTitle
                    |}
                    |
-                   |def orders = Orders
-                   |
-                   |case object OrdersList extends PathElement("list") {
-                   |
-                   |  def title = OrdersListTitle
-                   |}
-                   |
-                   |case object OrdersListTitle extends PathElement("title") with ResourcePath {
-                   |  def pathElements = Orders :: OrdersList :: OrdersListTitle :: Nil
+                   |case object __ItemsListTitle extends PathElement("title") with ResourcePath {
+                   |  def pathElements = __Items :: __ItemsList :: __ItemsListTitle :: Nil
                    |
                    |}
                    |
-                   |case object OrdersDetails extends PathElement("details") {
+                   |case object __Orders extends PathElement("orders") {
                    |
-                   |  def title = OrdersDetailsTitle
+                   |  def list = __OrdersList
+                   |
+                   |  def details = __OrdersDetails
                    |}
                    |
-                   |case object OrdersDetailsTitle extends PathElement("title") with ResourcePath {
-                   |  def pathElements = Orders :: OrdersDetails :: OrdersDetailsTitle :: Nil
+                   |def orders = __Orders
+                   |
+                   |case object __OrdersList extends PathElement("list") {
+                   |
+                   |  def title = __OrdersListTitle
+                   |}
+                   |
+                   |case object __OrdersListTitle extends PathElement("title") with ResourcePath {
+                   |  def pathElements = __Orders :: __OrdersList :: __OrdersListTitle :: Nil
+                   |
+                   |}
+                   |
+                   |case object __OrdersDetails extends PathElement("details") {
+                   |
+                   |  def title = __OrdersDetailsTitle
+                   |}
+                   |
+                   |case object __OrdersDetailsTitle extends PathElement("title") with ResourcePath {
+                   |  def pathElements = __Orders :: __OrdersDetails :: __OrdersDetailsTitle :: Nil
                    |
                    |}
                    |}""".stripMargin
@@ -139,11 +139,11 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                            |  resourcePath.resourceString()
                            |
-                           |case object Type extends PathElement("type") with ResourcePath {
-                           |  def pathElements = Type :: Nil
+                           |case object __Type extends PathElement("type") with ResourcePath {
+                           |  def pathElements = __Type :: Nil
                            |}
                            |
-                           |def `type` = Type
+                           |def `type` = __Type
                            |
                            |}""".stripMargin
 
@@ -171,27 +171,27 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                            |  resourcePath.resourceString()
                            |
-                           |case object Home extends PathElement("home") {
+                           |case object __Home extends PathElement("home") {
                            |  
-                           |  def title(arg0: Any, arg1: Any) = HomeTitle(arg0, arg1)
+                           |  def title(arg0: Any, arg1: Any) = __HomeTitle(arg0, arg1)
                            |  
                            |}
                            |
-                           |def home = Home
+                           |def home = __Home
                            |
-                           |case object HomeTitle extends PathElement("title") with ResourcePath {
-                           |  def pathElements = Home::HomeTitle :: Nil
+                           |case object __HomeTitle extends PathElement("title") with ResourcePath {
+                           |  def pathElements = __Home :: __HomeTitle :: Nil
                            |  
                            |  def apply(arg0: Any, arg1: Any) = resourceString(arg0, arg1)
                            |}
                            |
-                           |case object Other extends PathElement("other") with ResourcePath {
-                           |    def pathElements = Other :: Nil
+                           |case object __Other extends PathElement("other") with ResourcePath {
+                           |    def pathElements = __Other :: Nil
                            |
                            |    def apply(arg0: Any) = resourceString(arg0)
                            |}
                            |
-                           |def other(arg0: Any) = Other(arg0)
+                           |def other(arg0: Any) = __Other(arg0)
                            |
                            |}""".stripMargin
 
