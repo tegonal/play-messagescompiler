@@ -61,7 +61,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                    |  resourcePath.resourceString()
                    |
-                   |case object __Items extends PathElement("items") {
+                   |protected case object __Items extends PathElement("items") {
                    |
                    |  def details = __ItemsDetails
                    |
@@ -70,22 +70,22 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |
                    |def items = __Items
                    |
-                   |case object __ItemsDetails extends PathElement("details") with ResourcePath {
+                   |protected case object __ItemsDetails extends PathElement("details") with ResourcePath {
                    |  def pathElements = __Items :: __ItemsDetails :: Nil
                    |
                    |}
                    |
-                   |case object __ItemsList extends PathElement("list") {
+                   |protected case object __ItemsList extends PathElement("list") {
                    |
                    |  def title = __ItemsListTitle
                    |}
                    |
-                   |case object __ItemsListTitle extends PathElement("title") with ResourcePath {
+                   |protected case object __ItemsListTitle extends PathElement("title") with ResourcePath {
                    |  def pathElements = __Items :: __ItemsList :: __ItemsListTitle :: Nil
                    |
                    |}
                    |
-                   |case object __Orders extends PathElement("orders") {
+                   |protected case object __Orders extends PathElement("orders") {
                    |
                    |  def list = __OrdersList
                    |
@@ -94,22 +94,22 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |
                    |def orders = __Orders
                    |
-                   |case object __OrdersList extends PathElement("list") {
+                   |protected case object __OrdersList extends PathElement("list") {
                    |
                    |  def title = __OrdersListTitle
                    |}
                    |
-                   |case object __OrdersListTitle extends PathElement("title") with ResourcePath {
+                   |protected case object __OrdersListTitle extends PathElement("title") with ResourcePath {
                    |  def pathElements = __Orders :: __OrdersList :: __OrdersListTitle :: Nil
                    |
                    |}
                    |
-                   |case object __OrdersDetails extends PathElement("details") {
+                   |protected case object __OrdersDetails extends PathElement("details") {
                    |
                    |  def title = __OrdersDetailsTitle
                    |}
                    |
-                   |case object __OrdersDetailsTitle extends PathElement("title") with ResourcePath {
+                   |protected case object __OrdersDetailsTitle extends PathElement("title") with ResourcePath {
                    |  def pathElements = __Orders :: __OrdersDetails :: __OrdersDetailsTitle :: Nil
                    |
                    |}
@@ -139,7 +139,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                            |  resourcePath.resourceString()
                            |
-                           |case object __Type extends PathElement("type") with ResourcePath {
+                           |protected case object __Type extends PathElement("type") with ResourcePath {
                            |  def pathElements = __Type :: Nil
                            |}
                            |
@@ -171,7 +171,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
                            |  resourcePath.resourceString()
                            |
-                           |case object __Home extends PathElement("home") {
+                           |protected case object __Home extends PathElement("home") {
                            |  
                            |  def title(arg0: Any, arg1: Any) = __HomeTitle(arg0, arg1)
                            |  
@@ -179,13 +179,13 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |
                            |def home = __Home
                            |
-                           |case object __HomeTitle extends PathElement("title") with ResourcePath {
+                           |protected case object __HomeTitle extends PathElement("title") with ResourcePath {
                            |  def pathElements = __Home :: __HomeTitle :: Nil
                            |  
                            |  def apply(arg0: Any, arg1: Any) = resourceString(arg0, arg1)
                            |}
                            |
-                           |case object __Other extends PathElement("other") with ResourcePath {
+                           |protected case object __Other extends PathElement("other") with ResourcePath {
                            |    def pathElements = __Other :: Nil
                            |
                            |    def apply(arg0: Any) = resourceString(arg0)
