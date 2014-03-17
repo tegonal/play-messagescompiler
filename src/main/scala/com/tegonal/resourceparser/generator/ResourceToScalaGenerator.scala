@@ -84,6 +84,8 @@ object ResourceToScalaGenerator {
                 |  def pathElements: Seq[PathElement]
                 |
                 |  def resourceString(args: Any*) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+                |
+                |  override def toString = resourceString()
                 |}
                 |
                 |/**
