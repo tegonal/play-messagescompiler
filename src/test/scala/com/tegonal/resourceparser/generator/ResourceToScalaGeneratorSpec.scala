@@ -52,7 +52,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |trait ResourcePath {
                    |  def pathElements: Seq[PathElement]
                    |
-                   |  def resourceString(args: Any*) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+                   |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                    |
                    |  override def toString = resourceString()
                    |}
@@ -60,7 +60,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |/**
                    | * implicit conversion from resource path to Messages
                    | */
-                   |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
+                   |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
                    |  resourcePath.resourceString()
                    |
                    |protected case object __Items extends PathElement("items") {
@@ -132,7 +132,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |trait ResourcePath {
                            |  def pathElements: Seq[PathElement]
                            |
-                           |  def resourceString(args: Any*) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+                           |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                            |
                            |  override def toString = resourceString()
                            |}
@@ -140,7 +140,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |/**
                            | * implicit conversion from resource path to Messages
                            | */
-                           |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
+                           |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
                            |  resourcePath.resourceString()
                            |
                            |protected case object __Type extends PathElement("type") with ResourcePath {
@@ -166,7 +166,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |trait ResourcePath {
                            |  def pathElements: Seq[PathElement]
                            |
-                           |  def resourceString(args: Any*) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+                           |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                            |
                            |  override def toString = resourceString()
                            |}
@@ -174,7 +174,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |/**
                            | * implicit conversion from resource path to Messages
                            | */
-                           |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
+                           |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
                            |  resourcePath.resourceString()
                            |
                            |protected case object __Home extends PathElement("home") {

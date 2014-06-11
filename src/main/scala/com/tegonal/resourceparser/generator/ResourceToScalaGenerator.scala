@@ -83,15 +83,15 @@ object ResourceToScalaGenerator {
                 |trait ResourcePath {
                 |  def pathElements: Seq[PathElement]
                 |
-                |  def resourceString(args: Any*) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+                |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                 |
-                |  override def toString = resourceString()
+                |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
                 |}
                 |
                 |/**
                 | * implicit conversion from resource path to Messages
                 | */
-                |implicit def resourcePath2Messages(resourcePath: ResourcePath): String =
+                |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
                 |  resourcePath.resourceString()
                 |
                 |""".stripMargin
