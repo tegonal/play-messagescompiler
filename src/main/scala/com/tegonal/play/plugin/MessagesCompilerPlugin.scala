@@ -22,7 +22,9 @@ package com.tegonal.play.plugin
 
 import sbt._
 import sbt.Keys._
-import play.Project._
+import play.PlayImport._
+import PlayKeys._
+//import play.Project._
 import play.PlayExceptions.AssetCompilationException
 import java.io.File
 import sbt.ConfigKey.configurationToKey

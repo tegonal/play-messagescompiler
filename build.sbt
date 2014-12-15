@@ -4,7 +4,7 @@ name := "play-messagescompiler"
 
 organization := "com.tegonal"
 
-version := "1.0.5"
+version := "1.0.6-SNAPSHOT"
 
 description := "SBT plugin for compiled messages resources in Play 2.2"
 
@@ -14,7 +14,7 @@ resolvers ++= Seq(
   Resolver.url("Typesafe repository", url("http://repo.typesafe.com/typesafe/releases/"))(Resolver.ivyStylePatterns),
   "Typesafe Releases Maven " at "http://repo.typesafe.com/typesafe/releases/")
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.7")
 
 scalacOptions += "-deprecation"
 
