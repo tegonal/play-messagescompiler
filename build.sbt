@@ -16,6 +16,10 @@ resolvers ++= Seq(
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.7")
 
+libraryDependencies ++= Seq(
+    "org.specs2" %% "specs2-core" % "2.4.14" % "test"
+  )
+
 scalacOptions += "-deprecation"
 
 initialCommands := "import com.tegonal.play-messagescompiler._"
