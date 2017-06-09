@@ -29,10 +29,12 @@ import play.PlayExceptions.AssetCompilationException
 import java.io.File
 import sbt.ConfigKey.configurationToKey
 
-object MessagesCompilerPlugin extends Plugin {
+object MessagesCompilerPlugin extends AutoPlugin {
   val id = "play-messagescompiler"
   val entryPoints = SettingKey[PathFinder](id + "-entry-points")
   val options = SettingKey[Seq[String]](id + "-options")
+
+  override def requires = plugins.JvmPlugin
 
   val messagesWatcher = MessagesFilesWatcher(
     id,
@@ -41,7 +43,7 @@ object MessagesCompilerPlugin extends Plugin {
     { MessagesCompiler.compile _ },
     options in Compile)
 
-  override val settings = Seq(
+  override lazy val projectSettings = Seq(
     entryPoints <<= (confDirectory in Compile)(base => (base ** "messages")),
     options := Seq.empty[String],
     sourceGenerators in Compile <+= messagesWatcher)
@@ -86,7 +88,7 @@ object MessagesCompilerPlugin extends Plugin {
           }
         }
 
-        // write object graph to cache file 
+        // write object graph to cache file
         Sync.writeInfo(cacheFile,
           Relation.empty[File, File] ++ generated,
           currentInfos)(FileInfo.lastModified.format)
