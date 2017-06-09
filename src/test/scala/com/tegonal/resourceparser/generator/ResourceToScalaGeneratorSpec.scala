@@ -34,8 +34,9 @@ class ResourceToScalaGeneratorSpec extends Specification {
 
   val keywordsResourceFile = """type=Type"""
 
-  val resourceFileWithArgs = """home.title=The list {0} contains {1} elements
-                               |other=Another argument {0}""".stripMargin
+  val resourceFileWithArgs = """home.title.noargs=No arg message
+                               |home.title.onearg={0} Arg
+                               |home.title.twoargs={0} and {1} Args""".stripMargin
 
   val expected = """package com.tegonal.resourceparser
                    |
@@ -54,7 +55,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                    |
                    |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                    |
-                   |  override def toString = resourceString()
+                   |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
                    |}
                    |
                    |/**
@@ -134,7 +135,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |
                            |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
                            |
-                           |  override def toString = resourceString()
+                           |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
                            |}
                            |
                            |/**
@@ -152,54 +153,72 @@ class ResourceToScalaGeneratorSpec extends Specification {
                            |}""".stripMargin
 
   val argsExpected = """package com.tegonal.resourceparser
-                           |
-                           |import play.api.i18n._
-                           |import scala.language.implicitConversions
-                           |
-                           |object ResourceBundleImplicits {
-                           |
-                           |/**
-                           | * Definitions
-                           | */
-                           |abstract class PathElement(val identifier: String)
-                           |
-                           |trait ResourcePath {
-                           |  def pathElements: Seq[PathElement]
-                           |
-                           |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
-                           |
-                           |  override def toString = resourceString()
-                           |}
-                           |
-                           |/**
-                           | * implicit conversion from resource path to Messages
-                           | */
-                           |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
-                           |  resourcePath.resourceString()
-                           |
-                           |protected case object __Home extends PathElement("home") {
-                           |  
-                           |  def title(arg0: Any, arg1: Any) = __HomeTitle(arg0, arg1)
-                           |  
-                           |}
-                           |
-                           |def home = __Home
-                           |
-                           |protected case object __HomeTitle extends PathElement("title") with ResourcePath {
-                           |  def pathElements = __Home :: __HomeTitle :: Nil
-                           |  
-                           |  def apply(arg0: Any, arg1: Any) = resourceString(arg0, arg1)
-                           |}
-                           |
-                           |protected case object __Other extends PathElement("other") with ResourcePath {
-                           |    def pathElements = __Other :: Nil
-                           |
-                           |    def apply(arg0: Any) = resourceString(arg0)
-                           |}
-                           |
-                           |def other(arg0: Any) = __Other(arg0)
-                           |
-                           |}""".stripMargin
+                       |
+                       |import play.api.i18n._
+                       |import scala.language.implicitConversions
+                       |
+                       |object ResourceBundleImplicits {
+                       |
+                       |/**
+                       | * Definitions
+                       | */
+                       |abstract class PathElement(val identifier: String)
+                       |
+                       |trait ResourcePath {
+                       |  def pathElements: Seq[PathElement]
+                       |
+                       |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+                       |
+                       |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
+                       |}
+                       |
+                       |/**
+                       | * implicit conversion from resource path to Messages
+                       | */
+                       |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
+                       |  resourcePath.resourceString()
+                       |
+                       |
+                       |protected case object __Home extends PathElement("home") {
+                       |
+                       |  def title = __HomeTitle
+                       |
+                       |}
+                       |
+                       |def home = __Home
+                       |
+                       |protected case object __HomeTitle extends PathElement("title") {
+                       |
+                       |  def noargs = __HomeTitleNoargs
+                       |
+                       |  def onearg(arg0: Any) = __HomeTitleOnearg(arg0)
+                       |
+                       |  def twoargs(arg0: Any, arg1: Any) = __HomeTitleTwoargs(arg0, arg1)
+                       |
+                       |}
+                       |
+                       |
+                       |protected case object __HomeTitleNoargs extends PathElement("noargs") with ResourcePath {
+                       |  def pathElements = __Home :: __HomeTitle :: __HomeTitleNoargs :: Nil
+                       |
+                       |
+                       |}
+                       |
+                       |
+                       |protected case object __HomeTitleOnearg extends PathElement("onearg") with ResourcePath {
+                       |  def pathElements = __Home :: __HomeTitle :: __HomeTitleOnearg :: Nil
+                       |
+                       |  def apply(arg0: Any) = resourceString(arg0)
+                       |}
+                       |
+                       |
+                       |protected case object __HomeTitleTwoargs extends PathElement("twoargs") with ResourcePath {
+                       |  def pathElements = __Home :: __HomeTitle :: __HomeTitleTwoargs :: Nil
+                       |
+                       |  def apply(arg0: Any, arg1: Any) = resourceString(arg0, arg1)
+                       |}
+                       |
+                       }""".stripMargin
 
   "The generator" should {
     "generate Scala source code" in {
@@ -214,8 +233,14 @@ class ResourceToScalaGeneratorSpec extends Specification {
 
     "generate Scala code with arguments" in {
       val result = ResourceToScalaGenerator.generateSource(resourceFileWithArgs).get
+      println(s"Comparing\n$result with $argsExpected")
+      result.replaceAll("""[\n|\s]""", "") === argsExpected.replaceAll("""[\n|\s]""", "")
+    }
+
+    "generate Scala code with arguments" in {
+      val result = ResourceToScalaGenerator.generateSource(resourceFileWithArgs).get
+      println(s"Comparing\n$result with $argsExpected")
       result.replaceAll("""[\n|\s]""", "") === argsExpected.replaceAll("""[\n|\s]""", "")
     }
   }
 }
-

@@ -58,21 +58,20 @@ class ResourceBundleTree {
         resources.get(Path(path.pathElements.init)) map { parent =>
           parent.children += created
         } getOrElse {
-          createHierarchy(Path(path.pathElements.init), created, args)
+          createHierarchy(Path(path.pathElements.init), created)
         }
       }
   }
 
-  def createHierarchy(path: Path, child: ResourceNodeBuffer, args: List[Arg]): Unit = path match {
-    case Path(pathElements) => {
+  def createHierarchy(path: Path, child: ResourceNodeBuffer): Unit = path match {
+    case Path(pathElements) =>
       resources.get(path) map { existing =>
         existing.children += child
       } getOrElse {
-        val created = ResourceNodeBuffer(pathElements map (_.name), ListBuffer.empty += child, false, args)
+        val created = ResourceNodeBuffer(pathElements map (_.name), ListBuffer.empty += child, false, Nil)
         resources.put(path, created)
-        createHierarchy(Path(pathElements.init), created, args)
+        createHierarchy(Path(pathElements.init), created)
       }
-    }
   }
 }
 
