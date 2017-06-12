@@ -49,12 +49,12 @@ object ResourceToScalaGenerator {
   def createNodeCode(path: Seq[String], children: List[ResourceNode], isProperty: Boolean, args: List[Arg]) = {
     s"""protected case object __${path.map { _.capitalize }.mkString} extends PathElement("${path.last}")${if (isProperty) " with ResourcePath" else ""} {
        |  ${if (isProperty) "def pathElements = " + path.zipWithIndex.map { case (p, i) => "__" + (0 to i).toList.map(path(_).capitalize).mkString }.mkString(" :: ") + " :: Nil" else ""}
-       |  ${children.map { c => "def " + escapeReservedWord(c.path.last) + argumentList(c.args) + " = __" + c.path.map { _.capitalize }.mkString + parameterList(c.args) }.mkString("\n\n  ")}
-       |  ${if (!args.isEmpty && isProperty) "def apply" + argumentList(args) + " = resourceString" + parameterList(args) else ""}
+       |  ${children.map { c => "def " + escapeReservedWord(c.path.last) + argumentList(c.args, keepArgList=false) + " = __" + c.path.map { _.capitalize }.mkString + parameterList(c.args, keepArgList=false) }.mkString("\n\n  ")}
+       |  ${if (isProperty) "def apply" + argumentList(args, keepArgList=true) + " = resourceString" + parameterList(args, keepArgList=true) else ""}
        |}
        |${
       path match {
-        case p :: Nil => "\ndef " + escapeReservedWord(p) + { if (isProperty) argumentList(args) else "" } + " = __" + p.capitalize + { if (isProperty) parameterList(args) else "" }
+        case p :: Nil => "\ndef " + escapeReservedWord(p) + { if (isProperty) argumentList(args, keepArgList=false) else "" } + " = __" + p.capitalize + { if (isProperty) parameterList(args, keepArgList=false) else "" }
         case _ => ""
       }
     }
@@ -62,11 +62,12 @@ object ResourceToScalaGenerator {
        |${children.map(generate).mkString}""".stripMargin
   }
 
-  private def argumentList(args: List[Arg], param: String = ": Any") =
-    if (args.isEmpty) "" else s"(${args map (a => s"arg${a.index}$param") mkString (", ")})"
+  private def argumentList(args: List[Arg], param: String = ": Any", keepArgList: Boolean) =
+    if (args.isEmpty && !keepArgList) ""
+    else s"(${args map (a => s"arg${a.index}$param") mkString (", ")})"
 
-  private def parameterList(args: List[Arg]) =
-    argumentList(args, "")
+  private def parameterList(args: List[Arg], keepArgList: Boolean) =
+    argumentList(args, "", keepArgList)
 
   def open(packageName: String, objectName: String) = s"""package $packageName
                 |

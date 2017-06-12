@@ -38,187 +38,200 @@ class ResourceToScalaGeneratorSpec extends Specification {
                                |home.title.onearg={0} Arg
                                |home.title.twoargs={0} and {1} Args""".stripMargin
 
-  val expected = """package com.tegonal.resourceparser
-                   |
-                   |import play.api.i18n._
-                   |import scala.language.implicitConversions
-                   |
-                   |object ResourceBundleImplicits {
-                   |
-                   |/**
-                   | * Definitions
-                   | */
-                   |abstract class PathElement(val identifier: String)
-                   |
-                   |trait ResourcePath {
-                   |  def pathElements: Seq[PathElement]
-                   |
-                   |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
-                   |
-                   |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
-                   |}
-                   |
-                   |/**
-                   | * implicit conversion from resource path to Messages
-                   | */
-                   |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
-                   |  resourcePath.resourceString()
-                   |
-                   |protected case object __Items extends PathElement("items") {
-                   |
-                   |  def details = __ItemsDetails
-                   |
-                   |  def list = __ItemsList
-                   |}
-                   |
-                   |def items = __Items
-                   |
-                   |protected case object __ItemsDetails extends PathElement("details") with ResourcePath {
-                   |  def pathElements = __Items :: __ItemsDetails :: Nil
-                   |
-                   |}
-                   |
-                   |protected case object __ItemsList extends PathElement("list") {
-                   |
-                   |  def title = __ItemsListTitle
-                   |}
-                   |
-                   |protected case object __ItemsListTitle extends PathElement("title") with ResourcePath {
-                   |  def pathElements = __Items :: __ItemsList :: __ItemsListTitle :: Nil
-                   |
-                   |}
-                   |
-                   |protected case object __Orders extends PathElement("orders") {
-                   |
-                   |  def list = __OrdersList
-                   |
-                   |  def details = __OrdersDetails
-                   |}
-                   |
-                   |def orders = __Orders
-                   |
-                   |protected case object __OrdersList extends PathElement("list") {
-                   |
-                   |  def title = __OrdersListTitle
-                   |}
-                   |
-                   |protected case object __OrdersListTitle extends PathElement("title") with ResourcePath {
-                   |  def pathElements = __Orders :: __OrdersList :: __OrdersListTitle :: Nil
-                   |
-                   |}
-                   |
-                   |protected case object __OrdersDetails extends PathElement("details") {
-                   |
-                   |  def title = __OrdersDetailsTitle
-                   |}
-                   |
-                   |protected case object __OrdersDetailsTitle extends PathElement("title") with ResourcePath {
-                   |  def pathElements = __Orders :: __OrdersDetails :: __OrdersDetailsTitle :: Nil
-                   |
-                   |}
-                   |}""".stripMargin
+  val expected =
+    """package com.tegonal.resourceparser
+      |
+      |import play.api.i18n._
+      |import scala.language.implicitConversions
+      |
+      |object ResourceBundleImplicits {
+      |
+      |/**
+      | * Definitions
+      | */
+      |abstract class PathElement(val identifier: String)
+      |
+      |trait ResourcePath {
+      |  def pathElements: Seq[PathElement]
+      |
+      |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+      |
+      |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
+      |}
+      |
+      |/**
+      | * implicit conversion from resource path to Messages
+      | */
+      |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
+      |  resourcePath.resourceString()
+      |
+      |protected case object __Items extends PathElement("items") {
+      |
+      |  def details = __ItemsDetails
+      |
+      |  def list = __ItemsList
+      |}
+      |
+      |def items = __Items
+      |
+      |protected case object __ItemsDetails extends PathElement("details") with ResourcePath {
+      |  def pathElements = __Items :: __ItemsDetails :: Nil
+      |
+      |  def apply() = resourceString()
+      |
+      |}
+      |
+      |protected case object __ItemsList extends PathElement("list") {
+      |
+      |  def title = __ItemsListTitle
+      |}
+      |
+      |protected case object __ItemsListTitle extends PathElement("title") with ResourcePath {
+      |  def pathElements = __Items :: __ItemsList :: __ItemsListTitle :: Nil
+      |
+      |  def apply() = resourceString()
+      |
+      |}
+      |
+      |protected case object __Orders extends PathElement("orders") {
+      |
+      |  def list = __OrdersList
+      |
+      |  def details = __OrdersDetails
+      |}
+      |
+      |def orders = __Orders
+      |
+      |protected case object __OrdersList extends PathElement("list") {
+      |
+      |  def title = __OrdersListTitle
+      |}
+      |
+      |protected case object __OrdersListTitle extends PathElement("title") with ResourcePath {
+      |  def pathElements = __Orders :: __OrdersList :: __OrdersListTitle :: Nil
+      |
+      |  def apply() = resourceString()
+      |
+      |}
+      |
+      |protected case object __OrdersDetails extends PathElement("details") {
+      |
+      |  def title = __OrdersDetailsTitle
+      |}
+      |
+      |protected case object __OrdersDetailsTitle extends PathElement("title") with ResourcePath {
+      |  def pathElements = __Orders :: __OrdersDetails :: __OrdersDetailsTitle :: Nil
+      |
+      |  def apply() = resourceString()
+      |
+      |}
+      |}""".stripMargin
 
-  val keywordsExpected = """package com.tegonal.resourceparser
-                           |
-                           |import play.api.i18n._
-                           |import scala.language.implicitConversions
-                           |
-                           |object ResourceBundleImplicits {
-                           |
-                           |/**
-                           | * Definitions
-                           | */
-                           |abstract class PathElement(val identifier: String)
-                           |
-                           |trait ResourcePath {
-                           |  def pathElements: Seq[PathElement]
-                           |
-                           |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
-                           |
-                           |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
-                           |}
-                           |
-                           |/**
-                           | * implicit conversion from resource path to Messages
-                           | */
-                           |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
-                           |  resourcePath.resourceString()
-                           |
-                           |protected case object __Type extends PathElement("type") with ResourcePath {
-                           |  def pathElements = __Type :: Nil
-                           |}
-                           |
-                           |def `type` = __Type
-                           |
-                           |}""".stripMargin
+  val keywordsExpected =
+    """package com.tegonal.resourceparser
+      |
+      |import play.api.i18n._
+      |import scala.language.implicitConversions
+      |
+      |object ResourceBundleImplicits {
+      |
+      |/**
+      | * Definitions
+      | */
+      |abstract class PathElement(val identifier: String)
+      |
+      |trait ResourcePath {
+      |  def pathElements: Seq[PathElement]
+      |
+      |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+      |
+      |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
+      |}
+      |
+      |/**
+      | * implicit conversion from resource path to Messages
+      | */
+      |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
+      |  resourcePath.resourceString()
+      |
+      |protected case object __Type extends PathElement("type") with ResourcePath {
+      |  def pathElements = __Type :: Nil
+      |
+      |  def apply() = resourceString()
+      |}
+      |
+      |def `type` = __Type
+      |
+      |}""".stripMargin
 
-  val argsExpected = """package com.tegonal.resourceparser
-                       |
-                       |import play.api.i18n._
-                       |import scala.language.implicitConversions
-                       |
-                       |object ResourceBundleImplicits {
-                       |
-                       |/**
-                       | * Definitions
-                       | */
-                       |abstract class PathElement(val identifier: String)
-                       |
-                       |trait ResourcePath {
-                       |  def pathElements: Seq[PathElement]
-                       |
-                       |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
-                       |
-                       |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
-                       |}
-                       |
-                       |/**
-                       | * implicit conversion from resource path to Messages
-                       | */
-                       |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
-                       |  resourcePath.resourceString()
-                       |
-                       |
-                       |protected case object __Home extends PathElement("home") {
-                       |
-                       |  def title = __HomeTitle
-                       |
-                       |}
-                       |
-                       |def home = __Home
-                       |
-                       |protected case object __HomeTitle extends PathElement("title") {
-                       |
-                       |  def noargs = __HomeTitleNoargs
-                       |
-                       |  def onearg(arg0: Any) = __HomeTitleOnearg(arg0)
-                       |
-                       |  def twoargs(arg0: Any, arg1: Any) = __HomeTitleTwoargs(arg0, arg1)
-                       |
-                       |}
-                       |
-                       |
-                       |protected case object __HomeTitleNoargs extends PathElement("noargs") with ResourcePath {
-                       |  def pathElements = __Home :: __HomeTitle :: __HomeTitleNoargs :: Nil
-                       |
-                       |
-                       |}
-                       |
-                       |
-                       |protected case object __HomeTitleOnearg extends PathElement("onearg") with ResourcePath {
-                       |  def pathElements = __Home :: __HomeTitle :: __HomeTitleOnearg :: Nil
-                       |
-                       |  def apply(arg0: Any) = resourceString(arg0)
-                       |}
-                       |
-                       |
-                       |protected case object __HomeTitleTwoargs extends PathElement("twoargs") with ResourcePath {
-                       |  def pathElements = __Home :: __HomeTitle :: __HomeTitleTwoargs :: Nil
-                       |
-                       |  def apply(arg0: Any, arg1: Any) = resourceString(arg0, arg1)
-                       |}
-                       |
-                       }""".stripMargin
+  val argsExpected =
+    """package com.tegonal.resourceparser
+      |
+      |import play.api.i18n._
+      |import scala.language.implicitConversions
+      |
+      |object ResourceBundleImplicits {
+      |
+      |/**
+      | * Definitions
+      | */
+      |abstract class PathElement(val identifier: String)
+      |
+      |trait ResourcePath {
+      |  def pathElements: Seq[PathElement]
+      |
+      |  def resourceString(args: Any*)(implicit lang: Lang) = Messages(pathElements.map(_.identifier).mkString("."), args: _*)
+      |
+      |  def msg(args: Any*)(implicit lang: Lang) = resourceString(args)
+      |}
+      |
+      |/**
+      | * implicit conversion from resource path to Messages
+      | */
+      |implicit def resourcePath2Messages(resourcePath: ResourcePath)(implicit lang: Lang): String =
+      |  resourcePath.resourceString()
+      |
+      |
+      |protected case object __Home extends PathElement("home") {
+      |
+      |  def title = __HomeTitle
+      |
+      |}
+      |
+      |def home = __Home
+      |
+      |protected case object __HomeTitle extends PathElement("title") {
+      |
+      |  def noargs = __HomeTitleNoargs
+      |
+      |  def onearg(arg0: Any) = __HomeTitleOnearg(arg0)
+      |
+      |  def twoargs(arg0: Any, arg1: Any) = __HomeTitleTwoargs(arg0, arg1)
+      |
+      |}
+      |
+      |
+      |protected case object __HomeTitleNoargs extends PathElement("noargs") with ResourcePath {
+      |  def pathElements = __Home :: __HomeTitle :: __HomeTitleNoargs :: Nil
+      |
+      |  def apply() = resourceString()
+      |}
+      |
+      |
+      |protected case object __HomeTitleOnearg extends PathElement("onearg") with ResourcePath {
+      |  def pathElements = __Home :: __HomeTitle :: __HomeTitleOnearg :: Nil
+      |
+      |  def apply(arg0: Any) = resourceString(arg0)
+      |}
+      |
+      |
+      |protected case object __HomeTitleTwoargs extends PathElement("twoargs") with ResourcePath {
+      |  def pathElements = __Home :: __HomeTitle :: __HomeTitleTwoargs :: Nil
+      |
+      |  def apply(arg0: Any, arg1: Any) = resourceString(arg0, arg1)
+      |}
+      |
+      }""".stripMargin
 
   "The generator" should {
     "generate Scala source code" in {
