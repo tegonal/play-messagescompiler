@@ -67,7 +67,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
       |
       |protected case object __Items extends PathElement("items") {
       |
-      |  def details = __ItemsDetails
+      |  def details = __ItemsDetails()
       |
       |  def list = __ItemsList
       |}
@@ -83,7 +83,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
       |
       |protected case object __ItemsList extends PathElement("list") {
       |
-      |  def title = __ItemsListTitle
+      |  def title = __ItemsListTitle()
       |}
       |
       |protected case object __ItemsListTitle extends PathElement("title") with ResourcePath {
@@ -104,7 +104,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
       |
       |protected case object __OrdersList extends PathElement("list") {
       |
-      |  def title = __OrdersListTitle
+      |  def title = __OrdersListTitle()
       |}
       |
       |protected case object __OrdersListTitle extends PathElement("title") with ResourcePath {
@@ -116,7 +116,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
       |
       |protected case object __OrdersDetails extends PathElement("details") {
       |
-      |  def title = __OrdersDetailsTitle
+      |  def title = __OrdersDetailsTitle()
       |}
       |
       |protected case object __OrdersDetailsTitle extends PathElement("title") with ResourcePath {
@@ -202,7 +202,7 @@ class ResourceToScalaGeneratorSpec extends Specification {
       |
       |protected case object __HomeTitle extends PathElement("title") {
       |
-      |  def noargs = __HomeTitleNoargs
+      |  def noargs = __HomeTitleNoargs()
       |
       |  def onearg(arg0: Any) = __HomeTitleOnearg(arg0)
       |
