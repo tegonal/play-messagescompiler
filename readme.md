@@ -4,10 +4,11 @@
 
 This humble Play plugin provides type safety for the project's messages. It adds key literals instead of using strings to reference a property.
 
-
-    Messages("home.title")
-    // becomes
-    home.title
+```
+  Messages("home.title")
+  // becomes
+  home.title
+```
 
 Using the generated key literals saves the trouble of misspelt keys that lead to non-translated properties. A nonexistent or changed key will lead to a compilation error.
 
@@ -15,43 +16,60 @@ Using the generated key literals saves the trouble of misspelt keys that lead to
 
 Add the following to `project/plugins.sbt`:
 
-    resolvers += "Tegonal releases" at "https://github.com/tegonal/tegonal-mvn/raw/master/releases/"
+```scala
+  resolvers += "Tegonal releases" at "https://github.com/tegonal/tegonal-mvn/raw/master/releases/"
 
-    addSbtPlugin("com.tegonal" % "play-messagescompiler" % "1.0.4")
+  addSbtPlugin("com.tegonal" % "play-messagescompiler" % "1.0.6")
+```
+
+Then enable the plugin in `build.sbt`:
+
+```scala
+  lazy val myApp = (project in file("."))
+    .enablePlugins(com.tegonal.play.plugin.MessagesCompilerPlugin)
+```
 
 ## Usage
 
 The file `conf/messages` will be compiled to `target/scala*/src_managed/main/conf/messages.scala`
 
-    home.title=Space: the final frontier
+```
+  home.title=Space: the final frontier
+```
 
 After importing conf.messages._ the key literals are available within your code.
 
-    package controllers
-    
-    import play.api._
-    import play.api.mvc._
-    import play.api.i18n._
-    import conf.messages._
-    
-    object Application extends Controller {
-    
-      def index = Action {
-        Ok(views.html.index(home.title))
-      }
-    
+```scala
+  package controllers
+
+  import play.api._
+  import play.api.mvc._
+  import play.api.i18n._
+  import conf.messages._
+
+  object Application extends Controller {
+
+    def index = Action {
+      Ok(views.html.index(home.title))
     }
+
+  }
+```
 
 The plugin also supports message formats:
 
-    // conf/messages
-    home.title=Space: the final frontier, Stardate: {0}
+```
+  // conf/messages
+  home.title=Space: the final frontier, Stardate: {0}
+```
 
-    // within a controller
-    Ok(views.html.index(home.title("44390.1")))
-    
-    // where this wouldn't compile
-    Ok(views.html.index(home.title))
+```scala
+  // within a controller
+  Ok(views.html.index(home.title("44390.1")))
+
+  // where this wouldn't compile
+  Ok(views.html.index(home.title))
+```
 
 ## Ideas
 

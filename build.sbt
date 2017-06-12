@@ -4,9 +4,11 @@ name := "play-messagescompiler"
 
 organization := "com.tegonal"
 
-version := "1.0.6"
+version := "1.0.7-SNAPSHOT"
 
-description := "SBT plugin for compiled messages resources in Play 2.2"
+description := "SBT plugin for compiled messages resources in Play 2.3"
+
+sbtPlugin := true
 
 resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
