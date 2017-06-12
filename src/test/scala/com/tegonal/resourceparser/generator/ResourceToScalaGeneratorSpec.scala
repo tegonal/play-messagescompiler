@@ -233,13 +233,11 @@ class ResourceToScalaGeneratorSpec extends Specification {
 
     "generate Scala code with arguments" in {
       val result = ResourceToScalaGenerator.generateSource(resourceFileWithArgs).get
-      println(s"Comparing\n$result with $argsExpected")
       result.replaceAll("""[\n|\s]""", "") === argsExpected.replaceAll("""[\n|\s]""", "")
     }
 
     "generate Scala code with arguments" in {
       val result = ResourceToScalaGenerator.generateSource(resourceFileWithArgs).get
-      println(s"Comparing\n$result with $argsExpected")
       result.replaceAll("""[\n|\s]""", "") === argsExpected.replaceAll("""[\n|\s]""", "")
     }
   }
